@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard · DeepFace Watchlist</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav id="nav"></nav>
+
+  <main class="page">
+    <header class="hero">
+      <div class="eyebrow">05 · Admin only</div>
+      <h1>⚙️ Admin <em>Dashboard</em></h1>
+      <p>System overview, watchlist control, user accounts, activity logs and model settings.</p>
+    </header>
+
+    <div class="grid grid-4" id="stats"></div>
+
+    <div class="tabs mt" id="tabs">
+      <button class="on" data-t="overview">Overview</button>
+      <button data-t="watchlist">Watchlist</button>
+      <button data-t="accounts">Accounts</button>
+      <button data-t="logs">Activity Log</button>
+      <button data-t="settings">Model Settings</button>
+    </div>
+
+    <!-- OVERVIEW -->
+    <section class="tab-panel on" id="t-overview">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>Watchlist breakdown</h2>
+          <div class="bar-chart" id="breakdown"></div>
+          <h2 class="mt" style="margin-top:28px">Vectors per person</h2>
+          <div class="bar-chart" id="vecChart"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>🚨 Recent blacklist alerts</h2><a class="btn btn-ghost btn-sm" href="inference.html">Open monitor →</a></div>
+          <div class="log" id="recentAlerts"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WATCHLIST -->
+    <section class="tab-panel" id="t-watchlist">
+      <div class="card">
+        <div class="card-head">
+          <h2>All registered persons</h2>
+          <div class="row"><a class="btn btn-primary btn-sm" href="register.html">+ Register face</a></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Name</th><th>ID Number</th><th>Status</th><th>Photos</th><th>Vectors</th><th>Actions</th></tr></thead>
+            <tbody id="wlRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNTS -->
+    <section class="tab-panel" id="t-accounts">
+      <div class="grid grid-side">
+        <div class="card">
+          <h2>System accounts</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Username</th><th>Role</th><th>Created</th><th></th></tr></thead>
+              <tbody id="accRows"></tbody>
+            </table>
+          </div>
+        </div>
+        <form class="card" id="accForm" style="align-self:start">
+          <h2>+ New account</h2>
+          <div class="field"><label>Username</label><input class="input" id="aUser" required></div>
+          <div class="field"><label>Password</label><input class="input" id="aPass" type="password" minlength="6" required></div>
+          <div class="field"><span class="label">Role</span>
+            <div class="seg" id="aRole"><button type="button" class="on" data-v="user">User</button><button type="button" data-v="admin">Admin</button></div>
+          </div>
+          <button class="btn btn-primary btn-block">Create account</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- LOGS -->
+    <section class="tab-panel" id="t-logs">
+      <div class="card">
+        <div class="card-head">
+          <h2>Activity log</h2>
+          <div class="row">
+            <select class="input" id="logFilter" style="width:auto">
+              <option value="">All events</option>
+              <option value="alert">🚨 Blacklist alerts</option>
+              <option value="match">Authorised matches</option>
+              <option value="auth">Logins</option>
+              <option value="admin">Admin actions</option>
+            </select>
+            <button class="btn btn-ghost btn-sm" id="clearLogs">Clear log</button>
+          </div>
+        </div>
+        <div class="log" id="logList"></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="tab-panel" id="t-settings">
+      <div class="grid grid-2">
+        <div class="card">
+          <h2>Recognition model</h2>
+          <p class="muted" style="font-size:14px;margin-bottom:12px">These are the settings your server is actually running with. To change them, edit <span class="mono">MODEL_NAME</span>, <span class="mono">DETECTOR</span> and <span class="mono">MATCH_THRESHOLD</span> in <span class="mono">server.py</span> and restart it.</p>
+          <div class="table-wrap">
+            <table><tbody id="srvInfo"><tr><td class="empty">Loading…</td></tr></tbody></table>
+          </div>
+        </div>
+
+        <div>
+          <form class="card" id="setForm">
+            <h2>Video analysis</h2>
+            <div class="field"><label>Default video frame skip: <b id="fsVal" style="color:var(--accent)"></b></label>
+              <input type="range" id="sFs" min="1" max="15"></div>
+            <button class="btn btn-primary btn-block">Save</button>
+          </form>
+          <div class="card mt">
+            <h2>🔁 Retrain Everyone</h2>
+            <p class="muted" style="font-size:14px;margin-bottom:16px">Rebuilds every person's embeddings from their saved photos on the server.</p>
+            <div class="progress hidden" id="rtProg" style="margin-bottom:14px"><i></i></div>
+            <button class="btn btn-primary btn-block" id="retrainBtn">Retrain all faces</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
